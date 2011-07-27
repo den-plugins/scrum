@@ -1,0 +1,81 @@
+<%
+date = @date
+report_date = Date.new(params[:year].nil? ? date.year : params[:year].to_i,params[:month].nil? ? date.month : params[:month].to_i,params[:day].nil? ? date.day : params[:day].to_i)
+str_date = report_date.to_s[/.*?-(.*)/,1] 
+%>
+
+<div id="add_edit">
+<span style="float:right;position:relative;bottom:-2px;">	
+	<%= if User.current.member_of?(@project) and report_date <= Date.today
+		link_to (User.current.submitted_scrum_for?(@project, report_date) ? "Edit " : "Add ") + "Scrum Report for #{str_date}", {:controller=>:scrums,:action=>:create,:id=>params[:id],:date=>report_date}, {:style => "font-weight: bold;font-size: 100%;"}
+	end %>
+</span>
+<h4>Users who have not reported : <%= report_date %></h4>
+<%if !@users.empty? %>
+	<% usize = (@users.size.to_f / 30).ceil %>
+	<table>
+		<% i = 1 %>
+		<tr>
+		<% (1..usize.to_i).each do |x| %>
+			<td width="250px" valign="top">
+			<% y = x * 30 %>
+			<ul>
+				<% (i..@users.size).each do |z| %>
+					<% if !@users[z-1].submitted_scrum_for?(@project, report_date) %>
+						<li><span style="font-size:95%"><%= "#{@users[z-1].name}" %></span></li>
+						<% if (z % y) == 0  %>
+							<% i = z + 1 %>
+							<% break %>	
+						<% end %>
+					<% end %>	
+				<% end %>
+			</ul>	
+			</td>
+		<% end %>
+	</tr>		
+	</table>
+<%end%>
+
+<span style="float:right;position:relative;bottom:-20px;">
+	<%= if User.current.member_of?(@project) and User.current.submitted_scrum_for?(@project, report_date)
+		link_to "Delete Scrum Report for #{str_date}", {:controller => :scrums, :action => :delete, :id => params[:id], :date => report_date}, {:style => "font-weight: bold;font-size: 100%;"}
+	end %>
+</span> 
+<h4>Users who have reported : <%= report_date %></h4>
+<% if !@users.empty? %>
+	<ul>
+		<% @users.sort.each do |user| %>
+			<% if user.submitted_scrum_for?(@project, report_date) %>
+				<li><%= link_to_function "#{user.name}", "Effect.toggle('#{user.name}', 'appear', {duration: 0.3});this.blur()" %>
+				<% scrum_report = user.submitted_scrum(@project, report_date) %>
+				<div id="<%= user.name %>" style="display:none; padding: 10px; border: 1px solid #D7D7D7;">
+					<span style="float:right"><%= link_to_function (image_tag 'close.png'), "Effect.Fade('#{user.name}', {duration: 0.3})" %></span>
+					<h3>Scrum Report for <%= scrum_report.report_on %></h3>
+					<h4>What I did yesterday</h4>
+					<div style="overflow-x:auto;">
+						<%= textilizable scrum_report.task_done %>
+					</div>	
+					<h4>What I will do today</h4>
+					<div style="overflow-x:auto;">
+						<%= textilizable scrum_report.todo %>
+					</div>
+					<h4>Roadblocks</h4>
+					<div style="overflow-x:auto;">
+						<%= textilizable scrum_report.roadblocks %>
+					</div>
+					<%if scrum_report.updated_at%>
+					<h4></h4>
+					<table style="width:100%">
+						<tr>
+							<td>Created at: <%=scrum_report.created_at.to_s(:db)%></td>
+							<td style="text-align:right">Last updated at: <%=scrum_report.updated_at.to_s(:db)%></td>
+						</tr>
+					</table>
+					<% end %>
+				</div>
+				</li>
+			<% end %>
+		<% end %>
+	</ul>
+<% end %>
+</div>

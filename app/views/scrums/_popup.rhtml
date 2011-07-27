@@ -1,0 +1,20 @@
+<table align="center" cellspacing="5px">
+  <tr>
+  	<td align="right" width='20%'><label><b>Reporter<b/></label></td>
+	<td align="left" > <%= scrum.user.name %> </td>
+  </tr>	
+  <tr>
+  	<td valign="top" align="right" width='20%'><label><b>Task done</b></label></td>
+	<div style="border:1px solid black;overflow:hidden;"><%= scrum.task_done %></div>
+  </tr>
+  <tr>
+  	<td valign="top" align="right" width='20%'><label><b>To do</b></label></td>
+  	<div style="border:1px solid black;overflow:hidden;"><%= scrum.todo %></div>
+  </tr>
+  <%if !scrum.roadblocks.empty?  %>
+    <tr>  		
+  	  <td valign="top" align="right" width='20%'><label><b>Roadblocks</b></label></td>
+	  <div style="border:1px solid black;overflow:hidden;"><%= scrum.roadblocks %></div>
+    </tr>		
+  <% end %>  
+</table>

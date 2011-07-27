@@ -1,0 +1,10 @@
+<label><b>Reporter</b></label>
+<select id="owner_select" name="owner_select">
+  <option value='all_users'>All users</option>
+  <% project_members.each do |member|%>
+    <option value='<%= member.id %>'> <%= member.name %> </option> 
+  <%end %>
+</select>		
+	
+
+

@@ -1,0 +1,8 @@
+<% @text = @scrumtext[:task_done]%>
+<%= render :partial => 'common/preview' unless @text.nil? %>
+
+<% @text = @scrumtext[:todo]%>
+<%= render :partial => 'common/preview' unless @text.nil? %>
+
+<% @text = @scrumtext[:roadblocks]%>
+<%= render :partial => 'common/preview' unless @text.nil? %>

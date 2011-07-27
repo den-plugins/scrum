@@ -1,0 +1,27 @@
+<h2>Delete scrum</h2>  
+
+<div class="splitcontentleft">
+	<ul>
+	<div style="padding:10px; border: 1px solid #D7D7D7;">
+		<h3>Scrum Report for <%= @scrum.report_on %></h3>
+		<h4>What I did yesterday</h4>
+		<div style="overflow-x:auto;">
+			<%= textilizable @scrum.task_done %>
+		</div>	
+		<h4>What I will do today</h4>
+		<div style="overflow-x:auto;">
+			<%= textilizable @scrum.todo %>
+		</div>
+		<h4>Roadblocks</h4>
+		<div style="overflow-x:auto;">
+			<%= textilizable @scrum.roadblocks %>
+		</div>
+		<%if @scrum.updated_at%>
+		<h4></h4>
+		Last updated at: <%= @scrum.updated_at.to_s(:db)%>
+		<% end %>
+	</div>
+	<br/>
+	<%= button_to "Delete", {:action => :delete, :date => @scrum.report_on}, :confirm => "Are you sure?" %>
+	</ul>
+</div>

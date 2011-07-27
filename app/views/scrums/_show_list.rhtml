@@ -1,0 +1,52 @@
+<script language="JavaScript">
+  iBox.init_ibox();	
+</script>
+<table>
+  <tr>	
+    <td>	
+      <%= radio_button_tag 'scrum_period_type', '2', @free_period %>
+	  <span onclick="$('scrum_period_type_2').checked = true;">
+        <label>From</lable>
+		<%= text_field_tag 'scrum_date_from', @scrum_date_from, :size => 10, :readonly => true %> <%= calendar_for('scrum_date_from') %>	
+	    <label>To</lable>	
+	    <%= text_field_tag 'scrum_date_to', @scrum_date_to, :size => 10, :readonly => true %> <%= calendar_for('scrum_date_to') %>	
+	  </span>				  
+	</td>
+    <td> <%= submit_tag l(:button_apply) %> </td>			
+  </tr>  
+</table>
+<% if !@scrums.nil? && !@scrums.empty?%>
+  <table class="list scrums" width='100%'>		
+    <thead>
+      <tr>
+        <th>Date</th>
+	    <th>Reporter</th>
+	    <th>Task done</th>
+	    <th>To do</th>
+	    <th>Roadblocks</th>
+	  </tr>
+    </thead>
+    <tbody>
+      <% prev_date = '' %>
+      <% date = '' %>
+      <% @scrums.each do |scrum| %>
+	    <tr class="<%= cycle('odd', 'even') %>">
+          <td align="center" width='10%'>
+            <% date = scrum.report_on == Date.today ? l(:label_today).titleize : format_date(scrum.report_on) %>
+            <% unless prev_date == scrum.report_on %>
+            <strong><%= date%></strong>
+            <% end %>
+            <% prev_date = scrum.report_on %>
+          </td>
+	      <td align="center" width='10%'><%=link_to scrum.user.name, {:controller => 'scrums', :action => 'popup', :id => scrum.id},{:rel => "ibox&width=600", :title => 'Scrum Report for '+ date }%> </td>	
+	      <td align="center" width='30%'><%= truncate(scrum.task_done,35) %></td>
+	      <td align="center" width='30%'><%= truncate(scrum.todo,35) %></td>
+	      <td align="center" width='20%'><%= truncate(scrum.roadblocks,35) %></td>
+        </tr>		
+	  <% end %>  
+    </tbody>	
+  </table>
+  <p class="pagination"><%= scrum_pagination @scrum_pages, @scrum_count %></p>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

@@ -1,0 +1,68 @@
+<% @date_calendar = params[:month].nil? ? Date.today : @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i) %>
+<% calendar = Redmine::Helpers::Calendar.new(@date_calendar, current_language, :month) 
+	 calendar.reports = Scrum.find :all %>
+
+<table width="100%">
+	<tr>
+		<td align="left" width="30%">
+			<% @date.month != 1 ? (month = @date.last_month.month; year = @date.year) : (month = 12; year = @date.year - 1) %>
+			<%= link_to(l(:label_previous_month), {:controller => 'scrums', :action => 'index', :month => month, :year => year, :day => (month != Date.today.month ? day = 1 : day = Date.today.day)}) %>
+		</td>
+		<td align="center" width="40%">
+			<%= "#{month_name(@date.month)} #{@date.year}" %>
+		</td>
+		<td align="right" width="30%">
+			<% @date.month != 12 ? (month = @date.next_month.month; year = @date.year) : (month = 1; year = @date.year + 1) %>
+			<%= link_to(l(:label_next_month), {:controller => 'scrums', :action => 'index', :month => month, :year => year, :day => (month != Date.today.month ? day = 1 : day = Date.today.day)}) %>
+		</td>	
+	</tr>
+</table>
+
+<table class="cal">
+<thead>
+<tr><td></td><% 7.times do |i| %><th><%= day_name( (calendar.first_wday+i)%7 ) %></th><% end %></tr>
+</thead>
+<tbody>
+<tr>
+<% day = calendar.startdt
+while day <= calendar.enddt %>
+<%= "<th>#{day.cweek}</th>" if day.cwday == calendar.first_wday %>
+<td id="<%= day %>" class="<%= day.month==calendar.month ? 'even' : 'odd' %>" 
+	onmousedown=" 
+	<% if !calendar.reports_on(day).empty? %>
+	<% calendar.reports_on(day).each do |i| %>
+		<% if day == i.report_on %>
+			if (this.className.match(/even/)){
+				<%= remote_function(:update => 'scrum_report', 
+														:url => {:action => 'show', :id => params[:id], :user_id => i.user_id, 
+																		 :report_on => i.report_on, :year => day.year, :month => day.month, 
+																		 :day => day.day}); %>;
+			}
+		<% end %>;
+	<% end %>
+	<% else %>
+		<% if ((@date.month == Date.today.month) && (@date.year == Date.today.year) ? day.day <= @date.day : 
+					((@date.month <= Date.today.month) && (@date.year <= Date.today.year) ? true : 
+					((@date.month > Date.today.month) && (@date.year < Date.today.year) ? true : false))) %>
+			if (this.className.match(/even/)){
+				<%= remote_function(:update => 'scrum_report', 
+														:url => {:action => 'show', :id => params[:id], :year => day.year,
+																 	 	 :month => day.month, :day => day.day}); %>;
+			}
+		<% end %>
+	<% end %> ">
+<p class="day-num"><%= day.day %></p>
+<% if !calendar.reports_on(day).empty? %> 
+	<% calendar.reports_on(day).each do |i| %>
+		<% if day == i.report_on and params[:id].eql?(i.project.identifier) %>
+			<%= image_tag('report.png') %>
+		<% end %>
+	<% end %>
+<% end %>
+</td>
+<%= '</tr><tr>' if day.cwday==calendar.last_wday and day!=calendar.enddt %>
+<% day = day + 1
+end %>
+</tr>
+</tbody>
+</table>

@@ -1,0 +1,19 @@
+<%= error_messages_for 'scrum' %>
+
+<h2>Edit scrum</h2>  
+
+<div class="box">
+<% form_for @scrum, :url =>{:controller => 'scrums', :action => 'update', :id => params[:id], :date => params[:date]}, :html => {:multipart => true, :method => :post} do |f| -%>
+<%= render :partial => 'form', :locals => { :f => f } %>   
+</div>
+<p>
+	<%= submit_tag 'Update' %>
+	<%= link_to_remote 'Preview', {:url => {:controller => 'scrums', :action => 'preview', :id => params[:id]},
+																 :method => 'post',
+																 :update => 'preview',
+																 :with => "Form.serialize('edit_scrum_#{@scrum.id}')"} %>
+	|
+	<%= link_to_function 'Cancel', 'history.back()' %>
+</p>
+<% end -%>
+<div id="preview" class="wiki"></div>

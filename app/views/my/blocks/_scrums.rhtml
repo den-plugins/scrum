@@ -1,0 +1,43 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag '/plugin_assets/scrum/javascripts/ibox-2-17/ibox' %>
+  <%= javascript_tag "iBox.setPath('/plugin_assets/scrum/javascripts/ibox-2-17/')"%>
+<% end %>
+<h3>Scrum reports</h3>
+<div id='scrum_report'>
+  <% form_remote_tag(:url => {:controller => 'scrums', :action=>'show_list'},:update => "scrum_list") do %>	
+    <div class="list">
+      <fieldset>
+	    <table>
+	      <tr>
+	        <td>
+	          <p>
+	      	    <label><b>Project</b></label>
+			    <%= select_tag "project_select",options_from_collection_for_select(@projects_by_manager,'id','name') %>
+		         <%= observe_field("project_select",:frequency => 0.25,:update => "scrum_owner_select_id", :url=>{:controller => 'scrums', :action=>'project_members'},:with=>"'project_id='+value" ) %>		 	
+		      </p>
+	        </td>	      	   
+	      </tr>	
+	  	  <tr>
+	  	    <td>
+	  	      <div id="scrum_owner_select_id">
+	  	        <%= render :partial => 'scrums/project_members', :locals => {:members => @project_members } %>			        	
+	  	      </div>			      
+		    </td>  		      
+		  </tr>
+		  <tr>
+	        <td>
+			  <%= radio_button_tag 'scrum_period_type', '1', !@free_period %> 
+		      <%= select_tag 'scrum_period', options_for_date_range_select(params[:scrum_period]),   
+                             :onchange => "this.form.onsubmit();",                        
+                             :onfocus => '$("scrum_period_type_1").checked = true;' %>				  
+	        </td>
+		  </tr>
+		</table> 
+      <div id="scrum_list">
+	    <%= render :partial => 'scrums/show_list'%> 
+	  </div>				 
+    </fieldset>
+  </div>
+  &nbsp;
+  <% end %>	
+</div>
