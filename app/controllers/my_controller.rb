@@ -8,11 +8,6 @@ class MyController
 
   def page
 
-  	@billing_model = CustomField.find_by_name('Billing Model')
-  	@billing_model_values = [["Please Select", "0"]]
-  	@billing_model_values << @billing_model.possible_values
-  	@hello = params[:billing_model]  
-
   end
   
   def add_block
