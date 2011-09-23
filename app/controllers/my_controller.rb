@@ -3,7 +3,8 @@ require_dependency 'my_controller'
 class MyController
   unloadable
   
-  helper :scrums  
+  helper :scrums
+  helper :ticker  
   before_filter :filters, :only => [ :page, :add_block ]
 
   def page
