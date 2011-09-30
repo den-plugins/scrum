@@ -20,7 +20,7 @@ Redmine::Plugin.register :scrum do
     permission :enable_scrum, {:scrums => [:index, :show, :create, :update, :delete, :preview, :project_members, :show_list]}
   end
   
-  menu :project_menu, :scrums, {:controller => 'scrums', :action => 'index' }, :after => :repository, :caption=>"Scrums"
+  menu :project_menu, :scrums, {:controller => 'scrums', :action => 'index' }, :after => :task_board, :caption=>"Scrums"
 end
 
 require File.dirname(__FILE__) + '/app/models/user'
