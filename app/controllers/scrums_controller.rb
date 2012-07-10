@@ -156,7 +156,7 @@ class ScrumsController < ApplicationController
   end
   
   def is_member?
-    if ['Developer', 'Manager', 'Reporter'].include?(User.current.role_for_project(@project).name)
+    if ['Developer', 'Manager', 'Reporter', 'QA Engineer'].include?(User.current.role_for_project(@project).name)
       true
     else  
       deny_access
