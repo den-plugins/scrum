@@ -5,7 +5,7 @@
 <table width="100%">
 	<tr>
 		<td align="left" width="30%">
-			<% @date.month != 1 ? (month = @date.last_month.month; year = @date.year) : (month = 12; year = @date.year - 1) %>
+			<% @date.month != 1 ? (month = (@date - 1.month).month; year = @date.year) : (month = 12; year = @date.year - 1) %>
 			<%= link_to(l(:label_previous_month), {:controller => 'scrums', :action => 'index', :month => month, :year => year, :day => (month != Date.today.month ? day = 1 : day = Date.today.day)}) %>
 		</td>
 		<td align="center" width="40%">
