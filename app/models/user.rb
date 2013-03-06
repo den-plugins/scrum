@@ -31,6 +31,14 @@ module Dummy
       Dummy::User.find(:last).resources
     end
   end
+
+  def resource_allocations
+    allocations = []
+    projects.each do |proj|
+      allocations << proj.members.detect{|mem| mem.user_id == id}.resource_allocations
+    end
+    allocations
+  end
 end
 
 User.send(:include,ScrumUser)
